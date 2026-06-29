@@ -35,24 +35,24 @@ with st.sidebar:
     long_dist = st.slider("장시간 활동 거리 기준(m)", 100, 1500, 600, step=50)
     st.caption("예: 낚시/축구처럼 오래 이어지는 활동은 같은 장소라면 넓게 묶을 수 있습니다.")
 
-user_name = st.text_input("사용자 이름", value="", placeholder="예: 홍길동")
+user_name = st.text_input("사용자 이름(별명)을 작성해주세요.", value="", placeholder="예: 홍길동")
 if not user_name.strip():
     user_name = "사용자"
 
 day_memo = st.text_area(
-    "오늘 하루 어떠셨나요? 하루의 느낌을 한 문장에 담아보세요.",
-    placeholder="예: 차가운 물 한 잔이 반가운 계절이 왔다. 이번 여름은 기대된다.",
+    "오늘 하루 어떠셨나요?  하루의 느낌을 문장으로 기록해보세요.",
+    placeholder="예: 차가운 물 한 잔이 반가워지는 계절이 온 것 같아.",
     height=90,
 )
 
 uploaded_files = st.file_uploader(
-    "오늘의 사진을 업로드하세요. (데모버전이라 5장 이내로 할 것)",
+    "오늘의 사진을 업로드하세요. (데모버전이라 10장 이내로 할 것)",
     type=["jpg", "jpeg", "png"],
     accept_multiple_files=True,
 )
 
 if not uploaded_files:
-    st.info("사진을 업로드하면 하루를 큰 이벤트 단위로 분석하여 기록해줍니다.")
+    st.info("사진을 업로드하시면 하루를 큰 이벤트 단위로 분석하여 기록해드립니다.")
     st.stop()
 
 with st.spinner("사진의 촬영 시간과 위치 정보를 읽는 중입니다..."):
