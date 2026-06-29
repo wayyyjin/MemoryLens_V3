@@ -8,7 +8,7 @@ from gpt_utils import analyze_event, summarize_day
 st.set_page_config(page_title="Memory Lens", page_icon="📸", layout="wide")
 
 st.title("📸 Memory Lens")
-st.subheader("사진으로 하루를 기억해주는 AI Life Logging Agent")
+st.subheader("사진으로 하루를 기억해주는 AI Agent")
 st.write("---")
 
 
@@ -35,24 +35,24 @@ with st.sidebar:
     long_dist = st.slider("장시간 활동 거리 기준(m)", 100, 1500, 600, step=50)
     st.caption("예: 낚시/축구처럼 오래 이어지는 활동은 같은 장소라면 넓게 묶을 수 있습니다.")
 
-user_name = st.text_input("사용자 이름", value="홍길동", placeholder="예: 길진")
+user_name = st.text_input("사용자 이름", value="", placeholder="예: 홍길동")
 if not user_name.strip():
     user_name = "사용자"
 
 day_memo = st.text_area(
-    "오늘 전체에 대한 힌트가 있으면 적어주세요. 결과에 그대로 노출되지는 않습니다.",
-    placeholder="예: 제주 여행 마지막 날. 오전에는 카페, 오후에는 낚시, 저녁에는 가족 식사.",
+    "오늘 하루 어떠셨나요? 하루의 느낌을 한 문장에 담아보세요.",
+    placeholder="예: 차가운 물 한 잔이 반가운 계절이 왔다. 이번 여름은 기대된다.",
     height=90,
 )
 
 uploaded_files = st.file_uploader(
-    "사진을 여러 장 업로드하세요.",
+    "오늘의 사진을 업로드하세요. (데모버전이라 5장 이내로 할 것)",
     type=["jpg", "jpeg", "png"],
     accept_multiple_files=True,
 )
 
 if not uploaded_files:
-    st.info("사진을 업로드하면 AI가 하루를 이벤트 단위로 묶고 기록해줍니다.")
+    st.info("사진을 업로드하면 하루를 큰 이벤트 단위로 분석하여 기록해줍니다.")
     st.stop()
 
 with st.spinner("사진의 촬영 시간과 위치 정보를 읽는 중입니다..."):
@@ -69,13 +69,10 @@ with st.spinner("사진을 이벤트 단위로 묶는 중입니다..."):
 
 st.success(f"총 {len(photos)}장의 사진을 {len(events)}개의 이벤트로 묶었습니다.")
 
-st.write("## 🧭 오늘의 이벤트 타임라인")
-for idx, event in enumerate(events, start=1):
-    st.markdown(f"**Event {idx}.** {event_time_text(event)} · {event.address} · 사진 {len(event.photos)}장")
 
 st.write("---")
-st.write("## 📝 이벤트별 힌트 입력")
-st.caption("각 이벤트가 어떤 상황이었는지 대략 적어주세요. 이 메모는 GPT가 추론할 때만 참고하고, 결과에는 그대로 나오지 않습니다.")
+st.write("## 📝 어떤 하루를 보내셨나요?")
+st.caption("각 사진이 어떤 상황이었는지 대략적으로 적어주세요. 사용자의 메모를 통해 더 정확한 추론을 하여 기록해드립니다")
 
 for idx, event in enumerate(events, start=1):
     with st.expander(f"Event {idx} | {event_time_text(event)} | {event.address} | 사진 {len(event.photos)}장", expanded=False):
@@ -84,8 +81,8 @@ for idx, event in enumerate(events, start=1):
             with cols[i % len(cols)]:
                 st.image(make_thumbnail(photo.image, 260), caption=photo.time_text, width="content")
         event.note = st.text_area(
-            f"Event {idx} 힌트",
-            placeholder="예: 방파제에 도착해서 친구들과 낚시를 시작했고, 끝날 때쯤 다시 사진을 찍음.",
+            f"Event {idx} 메모",
+            placeholder="예: 부모님과 드라이브를 하며 찍은 풍경 사진.",
             key=f"event_note_{idx}",
             height=90,
         ).strip()
@@ -140,7 +137,7 @@ if st.button("🚀 AI 사진 일기 생성", type="primary"):
             f"기록:\n{result['record']}"
         )
 
-    st.write("# 📖 AI 하루 요약")
+    st.write("# 📖 오늘 하루를 요약해드리면요")
     st.info(day_summary)
 
     diary_text = "# Memory Lens 사진 일기\n\n"
